@@ -1,0 +1,13 @@
+﻿body {
+    background-color : #eeeeee;
+}
+
+#mainBox {
+    display: block;
+}
+
+#timer {
+    position: fixed;
+    right: 0px;
+    top: 0px;
+}
