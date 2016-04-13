@@ -29,16 +29,6 @@ var images = [
     "Assets/24.bmp"
 ];
 
-function Box(xCoordinate, yCoordinate, width, height, num) {
-	this.x = xCoordinate;
-	this.y = yCoordinate;
-	this.w = width;
-	this.h = height;
-	this.n = num;
-}
-
-var boxPosition = [];
-
 function createBox(box) {
     document.getElementById("mainBox").innerHTML = "";
     var totalBox = box * box;
@@ -49,35 +39,46 @@ function createBox(box) {
 
     for (var i = 0; i < totalBox; i++) {
         temp[i] = i;
-    }
+	}
 
     for (var i = 0; i < totalBox; i++) {
         index = Math.floor(Math.random() * num);
         randomNumbers[i] = temp[index];
-        
+
         for (var j = index; j < num - 1; j++) {
             temp[j] = temp[j + 1];
-        }
+		}
         num--;
-    }
+	}
 
+	var outerDiv;
+	var innerDiv;
+	var position;
+	
     for (var i = 0, z = 0; i < box; i++) {
-        document.getElementById("mainBox").innerHTML = document.getElementById("mainBox").innerHTML + "<div style='dislay:inline-block'>";
-        for (var j = 0; j < box; j++, z++) {
-        	document.getElementById("mainBox").innerHTML = document.getElementById("mainBox").innerHTML + "<img id='image" + (z + 1) + "' src='" + images[randomNumbers[z]] + "' class='w3-animate-opacity' style='z-index: 1'>";
-        	var distance = getViewportOffset($("#image" + (z + 1)));
-        	boxPosition.push(new Box(distance.left, distance.top, WIDTH, HEIGHT, (z + 1))); // create an array of type Box
-        }
-        document.getElementById("mainBox").innerHTML = document.getElementById("mainBox").innerHTML + "</div>";
-    }
-    document.getElementById("mainBox").innerHTML = document.getElementById("mainBox").innerHTML + "<img src='Assets/square.png' width='100' height='100' style='position: absolute; left: " + boxPosition[0].x + "px; top: " + boxPosition[0].y + "px; z-index: 2' />";
+        outerDiv = "<div style='width: " + box * WIDTH + "px; margin-left: auto; margin-right: auto'>";
+        for (var j = 0; j < box; j++ , z++) {
+			innerDiv = "<div id='" + (z + 1) + "' style='background-image: url(" + images[randomNumbers[z]] + "); float: left' class='img'><div id='border" + (z + 1) + "'></div></div>";
+			document.getElementById("mainBox").innerHTML += outerDiv + innerDiv + "</div>";
+		}
+	}
+	setBorder("border1");
+}
+
+function setBorder(id) {
+	document.getElementById(id).className = "innerBorder";
+	position = Number(id.substr(6, 1));
+}
+
+function removeBorder(id) {
+	document.getElementById(id).classList.remove = "innerBorder";
 }
 
 var sec = 0;
 function startTime() {
     document.getElementById('timer').innerHTML = convert(sec);
     sec++;
-    var t = setTimeout(startTime, 1000);
+	setTimeout(startTime, 1000);
 }
 function convert(s) {
     var h, m;
@@ -113,16 +114,4 @@ document.onkeydown = function (e) {
     		document.getElementById("Test").innerHTML = "Down clicked";
     		break;
     }
-}
-
-function getViewportOffset($e) {
-	var left, top;
-	var $window = $(window),
-	  scrollLeft = $window.scrollLeft(),
-	  scrollTop = $window.scrollTop(),
-	  offset = $e.offset();
-	return {
-		left: offset.left - scrollLeft,
-		top: offset.top - scrollTop
-	};
 }
