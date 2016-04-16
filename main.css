@@ -1,15 +1,19 @@
 ﻿body {
     background-color : #eeeeee;
-}
-
-#mainBox {
-    display: block;
+	font-family: 'Open Sans', sans-serif;
 }
 
 #timer {
-    position: fixed;
+    position: absolute;
     right: 0px;
-    top: 0px;
+    top: 65px;
+	font-size: 25px;
+}
+
+#errorMessage{
+	color: red;
+	clear: left;
+	font-size: 28px;
 }
 
 .img{
