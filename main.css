@@ -1,33 +1,132 @@
-﻿body {
-    background-color : #eeeeee;
+﻿html {
+	position: relative;
+    min-height: 100%;
+}
+
+body {
+	background-color: #EDF2F4;
 	font-family: 'Open Sans', sans-serif;
+	margin: 0 0 200px 0; /*margin bottom == footer height*/
+	padding-bottom: 20px;
 }
 
-#timer {
-    position: absolute;
-    right: 0px;
-    top: 65px;
-	font-size: 25px;
+a {
+	text-decoration: none;
 }
 
-#errorMessage{
+footer {
+	background-color: #4b4684;
+	height: 200px;
+	width: 100%;
+	position: absolute;
+	left: 0px;
+	bottom: 0px;
+}
+
+p {
+	margin-top: 0px;
+	margin-bottom: 0px
+}
+
+input {
+	margin-bottom: 10px;
+}
+
+#login {
+	float: right;
+	margin: 15px;
+}
+
+#form {
+	position: absolute;
+	top: 28px;
+	right: -25px;
+}
+
+#sideBar {
+	height: auto;
+	width: auto;
+	position: absolute;
+	top: 65px;
+	right: 0px;
+	float: right;
+	margin: 15px 15px 50px 15px;
+}
+
+#errorMessage {
 	color: red;
 	clear: left;
 	font-size: 28px;
 }
 
-.img{
+#contact {
+	width: 25%;
+	padding-top: 25px
+}
+
+#gitHubLogo {
+	width: 55px;
+	height: 55px;
+	border-radius: 50%;
+}
+
+#poweredByAzure {
+	width: 35%;
+	padding-right: 25px
+}
+
+.buttonLink {
+	background: none !important;
+	border: none;
+	padding: 0 !important;
+	font: inherit;
+	/*border is optional*/
+	border-bottom: 1px solid blue;
+	cursor: pointer;
+	color: blue;
+}
+
+.img {
 	width: 100px;
 	height: 100px;
 	position: relative;
 	background-repeat: no-repeat;
 }
 
-.innerBorder{
+.innerBorder {
 	width: 100px;
 	height: 100px;
 	position: absolute;
 	top: 0px;
 	left: 0px;
 	border: 3px solid black;
+}
+
+.backgroundMode {
+	width: 700px;
+	height: 500px;
+	margin: 30px;
+	padding-top: 30px;
+	border-radius: 10px;
+	background-color: #4ea6ca;
+}
+
+.mode {
+	width: 300px;
+	height: 100px;
+	margin-bottom: 30px;
+}
+
+.winMessage {
+	width: 500px;
+	height: auto;
+	margin: 50px;
+	padding: 20px;
+	border-radius: 10px;
+	background-color: #9BC53D;
+}
+
+.iconMargin {
+	margin-left: 15px;
+	margin-right: 10px
 }
