@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Name>Sliding Puzzle</Name>
+    <ProjectGuid>{0f554aa1-952f-4b6e-b058-b0d564858db3}</ProjectGuid>
+    <RootNamespace>
+    </RootNamespace>
+    <OutputType>Library</OutputType>
+    <ProjectTypeGuids>{A0786B88-2ADB-4C21-ABE8-AA2D79766269}</ProjectTypeGuids>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <IncludeDebugInformation>true</IncludeDebugInformation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <IncludeDebugInformation>false</IncludeDebugInformation>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Assets\1.bmp" />
+    <Compile Include="Assets\10.bmp" />
+    <Compile Include="Assets\11.bmp" />
+    <Compile Include="Assets\12.bmp" />
+    <Compile Include="Assets\13.bmp" />
+    <Compile Include="Assets\14.bmp" />
+    <Compile Include="Assets\15.bmp" />
+    <Compile Include="Assets\16.bmp" />
+    <Compile Include="Assets\17.bmp" />
+    <Compile Include="Assets\18.bmp" />
+    <Compile Include="Assets\19.bmp" />
+    <Compile Include="Assets\2.bmp" />
+    <Compile Include="Assets\20.bmp" />
+    <Compile Include="Assets\21.bmp" />
+    <Compile Include="Assets\22.bmp" />
+    <Compile Include="Assets\23.bmp" />
+    <Compile Include="Assets\24.bmp" />
+    <Compile Include="Assets\3.bmp" />
+    <Compile Include="Assets\4.bmp" />
+    <Compile Include="Assets\5.bmp" />
+    <Compile Include="Assets\6.bmp" />
+    <Compile Include="Assets\7.bmp" />
+    <Compile Include="Assets\8.bmp" />
+    <Compile Include="Assets\9.bmp" />
+    <Compile Include="Assets\alert.wav" />
+    <Compile Include="Assets\azure logo.png" />
+    <Compile Include="Assets\easy.png" />
+    <Compile Include="Assets\empty.bmp" />
+    <Compile Include="Assets\facebook logo.png" />
+    <Compile Include="Assets\github logo.png" />
+    <Compile Include="Assets\hard.png" />
+    <Compile Include="Assets\logo.png" />
+    <Compile Include="Assets\medium.png" />
+    <Compile Include="Check High Score.php" />
+    <Compile Include="index.php" />
+    <Compile Include="login.php" />
+    <Compile Include="logout.php" />
+    <Compile Include="main.css" />
+    <Compile Include="main.js" />
+    <Compile Include="README.md" />
+    <Compile Include="Web.config" />
+    <Compile Include="Web.Debug.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assets" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="jquery-2.2.3.min.js" />
+  </ItemGroup>
+</Project>
