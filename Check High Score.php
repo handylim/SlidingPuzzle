@@ -11,14 +11,22 @@
 			$conn = new PDO ("mysql:host=$serverName;dbname=$databaseName", $userName, $password);
 			$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+			/*$userEmail = null;
+			if (empty($_SESSION)) {
+				$userEmail = $_POST['email'];
+			}
+			else {
+				$userEmail = $_SESSION['email'];
+			}*/
+
 			if (!empty($_SESSION)) {
 				$userEmail = $_SESSION['email'];
 				$temp = (int)$_POST['time'];
-				
-				if ($userEmail!=null) {
+
+				if ($userEmail != null) {
 					$sql = "SELECT high_score FROM PlayerData WHERE email='$userEmail'";
 					$rslt = $conn->query($sql);
-					
+
 					foreach ($rslt as $row) {
 						if ($row['high_score'] == null) {
 							$highscore = $temp;
@@ -28,7 +36,7 @@
 						}
 					}
 
-					if($highscore!=null) {
+					if($highscore != null) {
 						$sql = "UPDATE PlayerData SET high_score=$highscore WHERE email='$userEmail'";
 						$stmnt = $conn->prepare($sql);
 						$stmnt->execute();

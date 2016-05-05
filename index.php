@@ -17,28 +17,46 @@
         </div>
 
 		<div id="login" class="w3-dropdown-hover">
-            <span id="headerEmail" style="font-size: 20px; color: #ffffff">Login</span>
+            <span id="headerEmail" style="font-size: 20px; color: #ffffff">
+			<?php
+				session_start();
+				if (empty($_SESSION)) {
+					echo "Login";
+				}
+				else {
+					echo $_SESSION['email'] . " <span style='font-size: 13px'>&#9660;</span>";
+				}
+			?>
+			</span>
 
 			<div id="form" class="w3-dropdown-content w3-card-4 w3-border" style="width: 300px">
-				<center id="centeredLogin">
-					<h4 id='loginHeader'>Login</h4>
-				</center>
+				<?php
+					if (empty($_SESSION)) { ?>
+						<center id="centeredLogin">
+							<h4 id='loginHeader'>Login</h4>
+						</center>
 				
-				<form id="loginForm" class="w3-form">
-					<input id="emailField" name="email" class="w3-input" type="email" placeholder="Email" required />
-		            <input id="passwordField" name="password" onfocus="$('#errorForm').text('')" class="w3-input" type="password" placeholder="Password" required />
-		            <div id="reEnterPassword"></div>
-		            <span id="errorForm" style="color: #ff0000; margin-bottom: 10px"></span>
-		            <center id="submitPart">
-		                <input id="btn_Submit" class="w3-btn w3-round-large w3-blue" type="submit" value="Login">
-		            </center>
-					<input id="IsSignUp" type="hidden" name="signUp" value="false" />
-		        </form>
+						<form id="loginForm" class="w3-form">
+							<input id="emailField" name="email" class="w3-input" type="email" placeholder="Email" required />
+							<input id="passwordField" name="password" onfocus="$('#errorForm').text('')" class="w3-input" type="password" placeholder="Password" required />
+							<div id="reEnterPassword"></div>
+							<span id="errorForm" style="color: #ff0000; margin-bottom: 10px"></span>
+							<center id="submitPart">
+								<input id="btn_Submit" class="w3-btn w3-round-large w3-blue" type="submit" value="Login">
+							</center>
+							<input id="IsSignUp" type="hidden" name="signUp" value="false" />
+						</form>
 
-		        <center id="message" style="margin-top: 15px; margin-bottom: 15px">
-		            Don't have account?<br />
-		            <button class="buttonLink" onclick="SignUp()">Sign Up</button>
-				</center>
+						<center id="message" style="margin-top: 15px; margin-bottom: 15px">
+							Don't have account?<br />
+							<button class="buttonLink" onclick="SignUp()">Sign Up</button>
+						</center>
+					<?php }
+					else {
+						echo "<center id='centeredLogin'><h4 id='loginHeader'>Logout</h4></center>" .
+						"<center id='logOutButton'><button class='w3-btn w3-round-large w3-red' onclick='logOut()' style='margin: 15px'>Log out</button></center>";
+						}
+					?>
             </div>
         </div>
     </header>
@@ -128,36 +146,6 @@
 		}
 
 		function logOut() {
-			$("#loginHeader").text("Login");
-			$("#headerEmail").text("Login");
-			$("#centeredLogin").remove();
-			$("#form").html(tempHTML);
-			$("#loginForm").submit(function () {
-				if (tempHTML == null) tempHTML = $('#form').html();
-				var email = $("#emailField").val();
-				$.ajax({
-					type: "POST",
-					dataType: "json",
-					url: "login.php",
-					data: "email=" + email + "&password=" + $("#passwordField").val() + "&signUp=" + $("#IsSignUp").val(),
-					success: function (result) {
-						if (result['connected']) {
-							$("#headerEmail").html(email + " <span style='font-size: 13px'>&#9660;</span>");
-							$("#form").html("<center id='centeredLogin'><h4 id='loginHeader'>Logout</h4></center>" +
-								"<center id='logOutButton'><button class='w3-btn w3-round-large w3-red' onclick='logOut()' style='margin: 15px'>Log out</button></center>");
-						}
-						else if (result['connected'] == false) {
-							$("#headerEmail").html("<span style='font-size: 14px'>Fail to connect to database</span>");
-							$("#centeredLogin").html("<h4 id='loginHeader'>Login</h4><br /><span style='color: #ff0000'>Fail to connect to database</span>");
-						}
-
-						if (result['error'] != null) {
-							$("#errorForm").text(result['error']);
-						}
-					}
-				});
-				return false;
-			});
 			$.post("logout.php");
 			location.reload(true);
 		}

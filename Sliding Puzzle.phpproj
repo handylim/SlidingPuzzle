@@ -62,7 +62,4 @@
   <ItemGroup>
     <Folder Include="Assets" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="jquery-2.2.3.min.js" />
-  </ItemGroup>
 </Project>

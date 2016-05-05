@@ -6,6 +6,9 @@ var sec;
 var t; // to store the timer interval
 var errorSound = new Audio();
 errorSound.src = "Assets/alert.wav";
+var swapMode = false;
+var showErrorMessage = false;
+var isWin = false;
 
 var images = [
 	"Assets/empty.bmp",
@@ -37,22 +40,37 @@ var images = [
 
 $("#loginForm").ready(function () {
 	$("#loginForm").submit(function () {
-		if (tempHTML == null) tempHTML = $('#form').html();
+		if (tempHTML == null) tempHTML = $("#form").html();
 		var email = $("#emailField").val();
+		var isContinue = true;
+
+		if (isWin) {
+			isContinue = false;
+		}
+
 		$.ajax({
 			type: "POST",
 			dataType: "json",
 			url: "login.php",
+			async: isContinue,
 			data: "email=" + email + "&password=" + $("#passwordField").val() + "&signUp=" + $("#IsSignUp").val(),
+			beforeSend: function () {
+				$("#errorForm").css("color", "#000000");
+				$("#errorForm").html("<center>Logging in ... </center>");
+			},
+			complete: function () {
+				$("#errorForm").css("color", "#ff0000");
+			},
 			success: function (result) {
+				$("#errorForm").text("");
 				if (result['connected']) {
+					$("#form").removeClass("showForm w3-animate-zoom");
 					$("#headerEmail").html(email + " <span style='font-size: 13px'>&#9660;</span>");
 					$("#form").html("<center id='centeredLogin'><h4 id='loginHeader'>Logout</h4></center>" +
 						"<center id='logOutButton'><button class='w3-btn w3-round-large w3-red' onclick='logOut()' style='margin: 15px'>Log out</button></center>");
 				}
 				else if (result['connected'] == false) {
-					$("#headerEmail").html("<span style='font-size: 14px'>Fail to connect to database</span>");
-					$("#centeredLogin").html("<h4 id='loginHeader'>Login</h4><br /><span style='color: #ff0000'>Fail to connect to database</span>");
+					$("#centeredLogin").html("<h4 id='loginHeader'>Login</h4><br /><span style='color: #ff0000'>Fail to connect to database<br />Please check your internet connection</span>");
 				}
 
 				if (result['error'] != null) {
@@ -60,6 +78,10 @@ $("#loginForm").ready(function () {
 				}
 			}
 		});
+
+		if (isWin) {
+			checkWin();
+		}
 		return false;
 	});
 });
@@ -73,7 +95,11 @@ function createBox(row) {
 		'<img onclick="createBox(4)" style="margin: 15px" width="auto" height="50" src="Assets/medium.png"/> <br />' +
 		'<img onclick="createBox(5)" style="margin: 15px" width="auto" height="50" src="Assets/hard.png"/>');
 
-	document.getElementById("sideBar").style.border = "1px solid #000000";
+	$("#sideBar").css("border", "1px solid #000000");
+
+	// in case the user turn the swap mode on and decide to choose another level at the menu section
+	swapMode = false;
+	showErrorMessage = false;
 
 	$("#mainBox").text("");
 	clearInterval(t);
@@ -86,10 +112,10 @@ function createBox(row) {
 	// for the timer
 	sec = 0;
 	function startTime() {
-		$("#timer").text(convert(sec))
+		$("#timer").text(convert(sec));
 		sec++;
-		document.getElementById("menu").style.borderTop = "1px solid #000000";
-		document.getElementById("timer").style.margin = "15px";
+		$("#menu").css("borderTop", "1px solid #000000");
+		$("#timer").css("margin", "15px");
 	}
 
 	t = setInterval(startTime, 1000); // start the timer
@@ -115,7 +141,7 @@ function createBox(row) {
 		innerDiv = "";
 		outerDiv = "<div style='width: " + row * WIDTH + "px; margin-left: auto; margin-right: auto'>";
 		for (var j = 0; j < row; j++ , z++) {
-			innerDiv += "<div id='" + (z + 1) + "' style='background-image: url(" + images[randomNumbers[z]] + "); float: left' class='img'><div id='border" + (z + 1) + "'></div></div>";
+			innerDiv += "<div id='" + (z + 1) + "' style='background-image: url(" + images[randomNumbers[z]] + "); float: left' class='img' onclick='clickSlide(this.id)'><div id='border" + (z + 1) + "'></div></div>";
 		}
 		document.getElementById("mainBox").innerHTML += outerDiv + innerDiv + "</div>";
 	}
@@ -165,10 +191,7 @@ function convert(s) {
 	return h + ":" + m + ":" + s;
 }
 
-var swapMode = false;
-var showErrorMessage = false;
-
-document.onkeydown = function(e) {
+document.onkeydown = function(e) { // to move the box via keyboard (arrow button)
 	e = e || event;
 
 	switch (e.keyCode) {
@@ -263,7 +286,85 @@ document.onkeydown = function(e) {
 			break;
 	}
 
-	if (checkWin()) {
+	checkWin();
+
+	if (showErrorMessage) {
+		errorSound.play();
+		$("#errorMessage").text("Unable to slide");
+		setTimeout(function () {
+			$("#errorMessage").text("");
+		}, 750);
+		showErrorMessage = false;
+	}
+}
+
+function clickSlide (clickedId) { // to move the box via mouse click
+	var interval = Math.abs(position - clickedId);
+	if (interval == 0) { // click the same box again
+		swapMode = !swapMode;
+		if (swapMode) {
+			swapModeOnBorder("border" + position);
+		}
+		else {
+			swapModeOffBorder("border" + position);
+		}
+	}
+	else if (swapMode) {
+		if (interval == 1 || interval == box) { // move left/rigt or up/down
+			if (checkEmptyBox((position).toString(), clickedId)) {
+				swap((position).toString(), clickedId);
+			}
+			else {
+				showErrorMessage = true;
+			}
+		}
+		else {
+			showErrorMessage = true;
+		}
+		swapModeOffBorder("border" + position);
+		swapMode = false;
+	}
+
+	checkWin();
+
+	if (!showErrorMessage) {
+		removeBorder("border" + position);
+		position = Number(clickedId);
+		setBorder("border" + position);
+	}
+	else {
+		errorSound.play();
+		$("#errorMessage").text("Unable to slide");
+		setTimeout(function () {
+			$("#errorMessage").text("");
+		}, 750);
+		showErrorMessage = false;
+	}
+}
+
+function checkWin() {
+	var win = true;
+
+	if (!isWin) {
+		// detect the empty box
+		if (document.getElementById((box * box).toString()).style.backgroundImage != "url(\"" + images[0] + "\")") {
+			win = false;
+		}
+		// detect the whether the numbered boxes are in the right place or not
+		if (win) {
+			for (var v = 1; v < box * box; v++) {
+				if (document.getElementById((v).toString()).style.backgroundImage != "url(\"" + images[v] + "\")") {
+					win = false;
+					break;
+				}
+			}
+			if (win) {
+				isWin = true;
+			}
+		}
+	}
+
+	if (isWin) {
 		clearInterval(t);
 		$.ajax({
 			type: "POST",
@@ -271,7 +372,7 @@ document.onkeydown = function(e) {
 			data: "time=" + sec,
 			success: function (rslt) {
 				if (rslt == "Please login first") {
-					$("#content").html("<center style='font-size: 50px'><div class='winMessage'>Congratulations,<br />You win!!!<br />Your time is:<br />" + convert(sec) + "<br /><span style='font-size:18px'>Please Login or Sign Up so your score can be recorded</span></div></center>");
+					$("#content").html("<center style='font-size: 50px'><div class='winMessage'>Congratulations,<br />You win!!!<br />Your time is:<br />" + convert(sec) + "<br /><span style='font-size:18px'>Please <button class='buttonLink' onclick='showFormLogin()'>Login</button> or <button class='buttonLink' onclick='showFormSignUp()'>Sign Up</button> so your score can be recorded</span></div></center>");
 				}
 				else if (rslt == "No data updated") {
 					$("#content").html("<center style='font-size: 50px'><div class='winMessage'>Congratulations,<br />You win!!!<br />Your time is:<br />" + convert(sec) + "</div></center>");
@@ -285,27 +386,23 @@ document.onkeydown = function(e) {
 			}
 		});
 	}
-
-	if (showErrorMessage) {
-		errorSound.play();
-		$("#errorMessage").text("Unable to slide");
-		setTimeout(function () {
-			$("#errorMessage").text("");
-		}, 750);
-		showErrorMessage = false;
-	}
 }
 
-function checkWin() {
-	// detect the empty box
-	if (document.getElementById((box * box).toString()).style.backgroundImage != "url(\"" + images[0] + "\")") {
-		return false;
+var isLoginShown = true;
+function showFormLogin() {
+	if (isLoginShown) {
+		$("#form").toggleClass("showForm w3-animate-zoom");
 	}
-	// detect the whether the numbered boxes are in the right place or not
-	for (var v = 1; v < box * box; v++) {
-		if (document.getElementById((v).toString()).style.backgroundImage != "url(\"" + images[v] + "\")") {
-			return false;
-		}
+	SignIn();
+	isLoginShown = true;
+	$("#emailField").focus();
+}
+
+function showFormSignUp() {
+	if (!isLoginShown) {
+		$("#form").toggleClass("showForm w3-animate-zoom");
 	}
-	return true;
+	SignUp();
+	isLoginShown = false;
+	$("#emailField").focus();
 }

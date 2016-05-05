@@ -1,9 +1,8 @@
 <?php
 	session_start();
-	// for login
 	function testInput($data) {
 		$data = trim($data);
-		$data = stripslashes ($data);
+		$data = stripslashes($data);
 		$data = htmlspecialchars($data);
 		return $data;
 	}
@@ -11,9 +10,8 @@
 	$response['connected'] = null;
 	$response['error'] = null;
 
-	if ($_SERVER["REQUEST_METHOD"]=="POST") {
+	if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		$userEmail = testInput($_POST["email"]);
-		$_SESSION['email'] = $userEmail;
 		$userPassword = sha1($_POST["password"]);
 
 		$serverName = "ap-cdbr-azure-southeast-b.cloudapp.net";
@@ -25,7 +23,7 @@
 			$conn = new PDO ("mysql:host=$serverName;dbname=$databaseName",$userName,$password);
 			$conn->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
 
-			if ($_POST["signUp"]=="false") { // login
+			if ($_POST["signUp"] == "false") { // login
 				$sql = "SELECT COUNT(*) FROM PlayerData WHERE email='$userEmail'";
 				if ($rslt = $conn->query($sql)) {
 					if ($rslt->fetchColumn() >= 1) {
@@ -33,6 +31,7 @@
 						foreach ($conn->query($sql) as $row) {
 							if ($row['password'] == $userPassword) {
 								$response['connected']=true;
+								$_SESSION['email'] = $userEmail;
 							}
 						}
 						if ($response['connected'] == null) {
@@ -44,19 +43,19 @@
 					}
 				}
 			}
-			else { // sign up
+			else { // Sign up
 				$sql = "SELECT email FROM PlayerData";
 				$result = $conn->query($sql);
 
 				$isEmailExist=false;
 				foreach($result as $row){
-					if($row['email']==$userEmail){
+					if($row['email'] == $userEmail){
 						$isEmailExist=true;
 						$response['error'] = "Email has been used";
 					}
 				}
 
-				if($isEmailExist==false){
+				if($isEmailExist == false){
 					$sql=$conn->prepare("INSERT INTO PlayerData (email, password)
 								VALUES (:useremail, :userpassword)");
 					$sql->bindParam(':useremail',$userEmailParam);
@@ -66,6 +65,7 @@
 					$userPasswordParam=$userPassword;
 					$sql->execute();
 					$response['connected'] = true;
+					$_SESSION['email'] = $userEmail;
 				}
 			}
 		}
